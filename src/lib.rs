@@ -13,6 +13,19 @@ fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+// TODO: add read file
+// pull first line
+// turn integer into string to loop through
+
+fn read_file() -> i32 {
+    let t = "123".to_string();
+    let mut result = vec![];
+    for i in t.chars() {
+        result.push(i.to_string().parse::<i32>().unwrap());
+    }
+    sum_factorial(&result)
+}
+
 fn sum_factorial(mine: &Vec<i32>) -> i32 {
     let mut sum_value = 0;
     for i in mine {
@@ -32,6 +45,12 @@ fn factorial(number: i32) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn big_test() {
+        let result = read_file();
+        assert_eq!(result, 9);
+    }
 
     fn check_factorial(value: i32, expected: i32) {
         let result = factorial(value);
@@ -59,7 +78,7 @@ mod tests {
     }
 
     #[test]
-    fn test_sum_one() {
+    fn test_sum_factorial() {
         for (value, expected) in [(vec![1, 2, 3], 9), (vec![1], 1)] {
             check_sum_factorial(value, expected)
         }
