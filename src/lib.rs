@@ -13,10 +13,10 @@ fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-fn sum_factorial(mine: Vec<i32>) -> i32 {
+fn sum_factorial(mine: &Vec<i32>) -> i32 {
     let mut sum_value = 0;
     for i in mine {
-        sum_value += factorial(i);
+        sum_value += factorial(*i);
     }
     sum_value
 }
@@ -33,39 +33,35 @@ fn factorial(number: i32) -> i32 {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_one() {
-        let result = factorial(1);
-        assert_eq!(result, 1);
+    fn check_factorial(value: i32, expected: i32) {
+        let result = factorial(value);
+        assert_eq!(
+            result, expected,
+            "Testing: value {}, expected {}",
+            value, expected
+        );
     }
 
     #[test]
-    fn test_two() {
-        let result = factorial(2);
-        assert_eq!(result, 2);
+    fn test_factorial() {
+        for (value, expected) in [(1, 1), (2, 2), (3, 6), (4, 24)] {
+            check_factorial(value, expected);
+        }
     }
 
-    #[test]
-    fn test_three() {
-        let result = factorial(3);
-        assert_eq!(result, 6);
-    }
-
-    #[test]
-    fn test_four() {
-        let result = factorial(4);
-        assert_eq!(result, 24);
+    fn check_sum_factorial(value: Vec<i32>, expected: i32) {
+        let result = sum_factorial(&value);
+        assert_eq!(
+            result, expected,
+            "Testing: value {:?}, expected {}",
+            value, expected
+        );
     }
 
     #[test]
     fn test_sum_one() {
-        let result = sum_factorial(vec![1]);
-        assert_eq!(result, 1);
-    }
-
-    #[test]
-    fn test_sum_three() {
-        let result = sum_factorial(vec![1, 2, 3]);
-        assert_eq!(result, 9);
+        for (value, expected) in [(vec![1, 2, 3], 9), (vec![1], 1)] {
+            check_sum_factorial(value, expected)
+        }
     }
 }
