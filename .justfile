@@ -16,3 +16,6 @@ python:
 
 maturin-develop:
     maturin develop
+
+rust-test:
+    cargo test

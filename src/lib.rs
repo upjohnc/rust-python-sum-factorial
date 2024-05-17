@@ -13,6 +13,14 @@ fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+fn sum_factorial(mine: Vec<i32>) -> i32 {
+    let mut sum_value = 0;
+    for i in mine {
+        sum_value += factorial(i);
+    }
+    sum_value
+}
+
 fn factorial(number: i32) -> i32 {
     if number <= 1 {
         return 1;
@@ -38,8 +46,26 @@ mod tests {
     }
 
     #[test]
+    fn test_three() {
+        let result = factorial(3);
+        assert_eq!(result, 6);
+    }
+
+    #[test]
     fn test_four() {
         let result = factorial(4);
         assert_eq!(result, 24);
+    }
+
+    #[test]
+    fn test_sum_one() {
+        let result = sum_factorial(vec![1]);
+        assert_eq!(result, 1);
+    }
+
+    #[test]
+    fn test_sum_three() {
+        let result = sum_factorial(vec![1, 2, 3]);
+        assert_eq!(result, 9);
     }
 }
