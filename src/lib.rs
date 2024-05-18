@@ -2,7 +2,8 @@ use std::fs;
 
 use pyo3::prelude::*;
 
-/// Formats the sum of two numbers as string.
+/// From the file path, it reads the first line and returns
+/// the sum of factorials of the individual digits
 #[pyfunction]
 fn file_sum_factorial(file_path: String) -> PyResult<i32> {
     Ok(read_file(file_path))
@@ -15,16 +16,11 @@ fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-// TODO: add read file
-// pull first line
-// turn integer into string to loop through
-
 fn read_file(file_path: String) -> i32 {
     let mem = fs::read_to_string(file_path).expect("Should have been a file");
     let t = mem.lines().collect::<Vec<_>>()[0];
     let mut result = vec![];
     for i in t.chars() {
-        // TODO: catch error when not a digit
         result.push(i.to_string().parse::<i32>().unwrap());
     }
     sum_factorial(&result)
