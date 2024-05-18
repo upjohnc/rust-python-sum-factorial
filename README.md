@@ -1,21 +1,35 @@
 # Description
 
-Example code of leveraging rust function in python code
+Code to test maturin+pyo3 to port portions of code from Python to Rust.
 
 ## Scenario
 
-Have files with integer in the first line.
-Want to calculate the factorial of each digit of the integer and then
-sum those values.
-Rust can do it faster.  Faster to read the files and process the text.
+You receive files in a directory everyday.  The business needs to have
+the first line parsed.  The individual digits of the integer in the first
+line are parsed to calculate the factorial of each digit and then
+the sum of those values is calculated.
 
-This creates the function to take a file path, read the file content,
-take the first line, parse the integer into individual digits,
-calculate the factorial of the digit, then sum the individual factorials.
+The team decided to move the reading of the contents of the file and the calculation
+into a Rust function.  The solution is to have a python script read a specified
+directory, call the Rust function, and prints the file with the related value.
+
+Maturin and pyo3 are used to translate the Rust function into a python function.
 
 ## Local Dev
 
-Need to install `rustfmt`: `brew install rustfmt`
+To create the local environment, you can create the python virtual env and then
+have the Rust ffi build into that virtual env.
 
 - create vintual env and source it
-- maturin develop then run python
+    - `python -m venv .venv`
+    - `source .venv/bin/activate`
+    - `pip install -r requirements.txt`
+- build the rust function
+    - `maturin develop`
+- run python code
+    - `python python/src/main.py`
+
+## Precommit
+
+Precommit has a hook to format the rust code.  Cargo did not have the `fmt` command
+in my local installation, so I needed to install `rustfmt` through homebrew.
