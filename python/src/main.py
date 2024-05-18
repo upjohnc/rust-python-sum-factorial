@@ -13,9 +13,7 @@ def main():
     for i in list_files:
         try:
             value = file_sum_factorial(str(i.resolve()))
-        except:
-            # except Exception as  e:
-            # print(e)
+        except ValueError:
             value = None
         result[str(i)] = value
     print(result)

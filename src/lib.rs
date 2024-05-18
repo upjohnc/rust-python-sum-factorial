@@ -1,12 +1,12 @@
-use std::fs;
-
 use pyo3::prelude::*;
+use std::fs;
+use std::num::ParseIntError;
 
 /// From the file path, it reads the first line and returns
 /// the sum of factorials of the individual digits
 #[pyfunction]
 fn file_sum_factorial(file_path: String) -> PyResult<i32> {
-    Ok(read_file(file_path))
+    Ok(read_file(file_path)?)
 }
 
 /// A Python module implemented in Rust.
@@ -16,14 +16,17 @@ fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-fn read_file(file_path: String) -> i32 {
+fn read_file(file_path: String) -> Result<i32, ParseIntError> {
     let mem = fs::read_to_string(file_path).expect("Should have been a file");
     let t = mem.lines().collect::<Vec<_>>()[0];
     let mut result = vec![];
     for i in t.chars() {
-        result.push(i.to_string().parse::<i32>().unwrap());
+        match i.to_string().parse::<i32>() {
+            Ok(x) => result.push(x),
+            Err(x) => return Err(x),
+        }
     }
-    sum_factorial(&result)
+    Ok(sum_factorial(&result))
 }
 
 fn sum_factorial(mine: &Vec<i32>) -> i32 {
@@ -81,6 +84,6 @@ mod tests {
     #[test]
     fn big_test() {
         let result = read_file("./src/text.txt".to_string());
-        assert_eq!(result, 3);
+        assert_eq!(result, Ok(3));
     }
 }
