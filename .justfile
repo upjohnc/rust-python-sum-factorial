@@ -4,15 +4,11 @@ default:
 create-venv:
      python -m venv .venv
 
-source-venv:
-    source .venv/bin/activate
-
-
 python-install:
     pip install -r requirements.txt
 
 python:
-    python python/src/basic.py
+    python python/src/main.py
 
 maturin-develop:
     maturin develop
