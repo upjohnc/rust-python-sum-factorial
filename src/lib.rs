@@ -1,15 +1,17 @@
+use std::fs;
+
 use pyo3::prelude::*;
 
 /// Formats the sum of two numbers as string.
 #[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
+fn file_sum_factorial(file_path: String) -> PyResult<i32> {
+    Ok(read_file(file_path))
 }
 
 /// A Python module implemented in Rust.
 #[pymodule]
 fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
+    m.add_function(wrap_pyfunction!(file_sum_factorial, m)?)?;
     Ok(())
 }
 
@@ -17,10 +19,12 @@ fn rust_factorial_sum(_py: Python, m: &PyModule) -> PyResult<()> {
 // pull first line
 // turn integer into string to loop through
 
-fn read_file() -> i32 {
-    let t = "123".to_string();
+fn read_file(file_path: String) -> i32 {
+    let mem = fs::read_to_string(file_path).expect("Should have been a file");
+    let t = mem.lines().collect::<Vec<_>>()[0];
     let mut result = vec![];
     for i in t.chars() {
+        // TODO: catch error when not a digit
         result.push(i.to_string().parse::<i32>().unwrap());
     }
     sum_factorial(&result)
@@ -45,12 +49,6 @@ fn factorial(number: i32) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn big_test() {
-        let result = read_file();
-        assert_eq!(result, 9);
-    }
 
     fn check_factorial(value: i32, expected: i32) {
         let result = factorial(value);
@@ -82,5 +80,11 @@ mod tests {
         for (value, expected) in [(vec![1, 2, 3], 9), (vec![1], 1)] {
             check_sum_factorial(value, expected)
         }
+    }
+
+    #[test]
+    fn big_test() {
+        let result = read_file("./src/text.txt".to_string());
+        assert_eq!(result, 3);
     }
 }
